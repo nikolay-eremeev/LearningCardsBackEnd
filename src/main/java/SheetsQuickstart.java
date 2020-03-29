@@ -92,8 +92,6 @@ public class SheetsQuickstart {
 
         try {
             PrintStream outStream = new PrintStream(System.out, true, "UTF-8");
-            outStream.println("Hello world!");
-            outStream.println("хуйхуйхуй");
         } catch (UnsupportedEncodingException e) {
             System.out.println("Caught exception: " + e.getMessage());
         }
@@ -104,15 +102,12 @@ public class SheetsQuickstart {
                     try (ServerSocket serverSocket = new ServerSocket(port)) {
                         String retval = getVocab();
                         System.out.println("Server is listening on port " + port);
-                        System.out.println("Press x and then Enter to escape the Programm!!!");
                         System.out.flush();
                         Socket socket = serverSocket.accept();
                         System.out.println("New client connected");
                         OutputStream output = socket.getOutputStream();
-
                         PrintWriter writer = new PrintWriter(
                                 new BufferedWriter(new OutputStreamWriter(output, "UTF-8")), true);
-
                         writer.println(retval);
                         System.out.println("Data has been sent");
                     } catch (IOException e) {
@@ -125,10 +120,6 @@ public class SheetsQuickstart {
         };
 
         thread.start();
-
-        (new Scanner(System.in)).nextLine();
-
-        thread.interrupt();
 
     }
 
