@@ -31,6 +31,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.util.Scanner;
 
+import java.nio.charset.StandardCharsets;
 
 public class SheetsQuickstart {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
@@ -39,7 +40,7 @@ public class SheetsQuickstart {
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
     private static final String HOST_INFO_FILE_PATH = "/host_info.json";
-    
+
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         InputStream in = SheetsQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
@@ -88,24 +89,35 @@ public class SheetsQuickstart {
     public static void main(String[] args) {
 
         int port = 6868;
- 
+
+        try {
+            PrintStream outStream = new PrintStream(System.out, true, "UTF-8");
+            outStream.println("Hello world!");
+            outStream.println("хуйхуйхуй");
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("Caught exception: " + e.getMessage());
+        }
+
         thread = new Thread() {
             public void run() {
                 while (true) {
                     try (ServerSocket serverSocket = new ServerSocket(port)) {
+                        String retval = getVocab();
                         System.out.println("Server is listening on port " + port);
                         System.out.println("Press x and then Enter to escape the Programm!!!");
                         System.out.flush();
                         Socket socket = serverSocket.accept();
                         System.out.println("New client connected");
                         OutputStream output = socket.getOutputStream();
-                        PrintWriter writer = new PrintWriter(output, true);
-                        String retval = getVocab();
+
+                        PrintWriter writer = new PrintWriter(
+                                new BufferedWriter(new OutputStreamWriter(output, "UTF-8")), true);
+
                         writer.println(retval);
                         System.out.println("Data has been sent");
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }  catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -117,9 +129,7 @@ public class SheetsQuickstart {
         (new Scanner(System.in)).nextLine();
 
         thread.interrupt();
-    
+
     }
-
-
 
 }
